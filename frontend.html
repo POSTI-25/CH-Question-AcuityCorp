@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Corporate Login - Acuity</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+<body class="bg-gray-900 flex items-center justify-center min-h-screen text-gray-200">
+
+    <div class="w-full max-w-md mx-auto p-8 bg-gray-800 rounded-2xl shadow-2xl border border-gray-700">
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-white">Acuity Corp</h1>
+            <p class="text-gray-400 mt-2">Internal System Login</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="mb-4">
+                <label for="username" class="block text-sm font-medium text-gray-400 mb-2">Username</label>
+                <input type="text" id="username" name="username" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="e.g., admin" required>
+            </div>
+
+            <div class="mb-6">
+                <label for="password" class="block text-sm font-medium text-gray-400 mb-2">Password</label>
+                <input type="password" id="password" name="password" class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all" placeholder="••••••••" required>
+            </div>
+
+            <div class="mb-6">
+                <button type="submit" id="loginButton" class="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-lg transition-transform transform hover:scale-105 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-800 focus:ring-blue-500">
+                    Sign In
+                </button>
+            </div>
+        </form>
+
+        <!-- Response Message Area -->
+        <div id="responseMessage" class="mt-6 text-center text-sm p-4 rounded-lg hidden"></div>
+
+    </div>
+
+    <script>
+        const loginForm = document.getElementById('loginForm');
+        const responseMessage = document.getElementById('responseMessage');
+
+        loginForm.addEventListener('submit', async (e) => {
+            e.preventDefault(); // Prevent the default form submission
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // --- CTF Backend Logic ---
+            // In your actual CTF, this is where you would make a fetch request
+            // to your backend API hosted on Vercel.
+            //
+            // Example:
+            // const response = await fetch('/api/login', {
+            //     method: 'POST',
+            //     headers: { 'Content-Type': 'application/json' },
+            //     body: JSON.stringify({ username, password })
+            // });
+            // const result = await response.json();
+            //
+            // Your backend API at /api/login would then insecurely query the database.
+            // For example, in Node.js with a pg (PostgreSQL) library:
+            //
+            // const query = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+            // // THIS IS VULNERABLE! DO NOT USE IN PRODUCTION.
+            // const { rows } = await db.query(query);
+            //
+            // A successful injection might return a user object that contains the flag.
+            // For example, if someone enters: ' OR '1'='1'; --
+            // The query becomes: SELECT * FROM users WHERE username = '' OR '1'='1'; --' AND password = '...'
+            // This would log them in as the first user in the database (likely admin).
+
+            // For demonstration purposes, we'll simulate the check client-side.
+            // This is NOT secure, but it helps visualize the goal for your CTF.
+            // A common simple payload is `' OR '1'='1`.
+            if (username.includes("' OR '1'='1") || password.includes("' OR '1'='1")) {
+                // Successful injection
+                showMessage("Login successful! Here is your flag: CTF{SQL_1nj3cti0n_is_fun!}", "success");
+            } else {
+                // Failed login attempt
+                showMessage("Error: Invalid username or password.", "error");
+            }
+        });
+
+        function showMessage(message, type) {
+            responseMessage.textContent = message;
+            responseMessage.classList.remove('hidden', 'bg-green-900', 'text-green-300', 'bg-red-900', 'text-red-300');
+
+            if (type === 'success') {
+                responseMessage.classList.add('bg-green-900', 'text-green-300');
+            } else {
+                responseMessage.classList.add('bg-red-900', 'text-red-300');
+            }
+            responseMessage.classList.remove('hidden');
+        }
+    </script>
+
+</body>
+</html>
