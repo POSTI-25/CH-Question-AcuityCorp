@@ -18,7 +18,7 @@ export default async function handler(req, res) {
   // --- DO NOT EVER DO THIS IN A REAL APPLICATION. ---
   // The code directly inserts user input into the query string.
   const vulnerableQuery = `
-    SELECT * FROM secret_locations 
+    SELECT * FROM secretLocations 
     WHERE 
       x_coordinate = ${x_coordinate} AND 
       y_coordinate = ${y_coordinate} AND 
